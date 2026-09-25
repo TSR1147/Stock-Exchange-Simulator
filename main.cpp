@@ -1,4 +1,5 @@
 #include<iostream>
+#include "user.h"
 using namespace std;
 int main()
 {
@@ -15,8 +16,11 @@ int main()
         switch(choice)
         {
             case 1:
-                cout << "\nCreate Account Feature Coming Soon...\n";
+            {
+                user newUser;
+                newUser.createAccount();
                 break;
+            }
 
             case 2:
                 cout << "\nLogin Feature Coming Soon...\n";
