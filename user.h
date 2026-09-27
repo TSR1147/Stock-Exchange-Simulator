@@ -18,5 +18,7 @@ class user
         void createAccount();
         // Save user details into a file.
         void saveToFile();
+        // Check whether username already exists.
+        bool userExists(string uname);
 };
 #endif

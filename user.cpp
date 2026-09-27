@@ -2,7 +2,19 @@
 #include "user.h"
 #include <conio.h>
 #include <fstream>
+#include <cctype>
 using namespace std;
+
+string toLowerCase(string str)
+{
+    for(int i = 0; i < str.length(); i++)
+    {
+        str[i] = tolower(str[i]);
+    }
+
+    return str;
+}
+
 user::user()
 {
     username = "";
@@ -15,6 +27,15 @@ void user::createAccount()
 {
     cout << "\nEnter Username: ";
     cin >> username;
+
+    username = toLowerCase(username); // Convert username to lowercase for consistency
+
+    if(userExists(username))
+    {
+        cout << "\nUsername Already Exists.\n";
+        cout << "Please Try Again With A Different Username.\n";
+        return;
+    }
 
     cout << "Enter Password: ";
 
@@ -62,4 +83,29 @@ void user::saveToFile()
     file.close();
 
     cout << "User Details Saved Succesfully!.\n";
+}
+
+// Checking whether username already exists in users.txt
+bool user::userExists(string uname)
+{
+    ifstream file("users.txt");
+    
+    string fileUsername;
+    string filePassword;
+    double fileBalance;
+
+    //Reading One USer Record At A Time
+    while(file >> fileUsername >> filePassword >> fileBalance)
+    {
+        //If Username Matches, Return True
+        if(toLowerCase(fileUsername) == toLowerCase(uname))
+        {
+            return true;
+        }
+    }
+
+    file.close();
+
+    //Username Not Found
+    return false;
 }
