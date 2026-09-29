@@ -109,3 +109,62 @@ bool user::userExists(string uname)
     //Username Not Found
     return false;
 }
+//Login Into An Existing Account
+bool:: user::login()
+{
+    ifstream file("users.txt");
+
+    string loginUsername;
+    string loginPassword;
+
+    string fileUsername;
+    string filePassword;
+    double fileBalance;
+
+    cout << "\nEnter Username: ";
+    cin >> loginUsername;
+
+    //convert username to lowercase for consistency
+    loginUsername = toLowerCase(loginUsername);
+
+    cout << "Enter Password: ";
+
+    char ch;
+    loginPassword = "";
+
+    while((ch = _getch()) != 13)
+    {
+        if((int)ch == 8)
+        {
+            //Remove The Last Character From Password If Backspace Is Pressed.
+            if(!loginPassword.empty())
+            {
+                loginPassword.pop_back();
+                cout << "\b \b";
+            }
+        }
+        else
+        {
+            //Adding The Character To Password And Displaying Asterisk.
+            loginPassword += ch;
+            cout << '*';
+        }
+    }
+
+    cout << endl;
+
+    while(file >> fileUsername >> filePassword >> fileBalance)
+    {
+        if(toLowerCase(fileUsername) == toLowerCase(loginUsername) && filePassword == loginPassword)
+        {
+            cout << "\nLogin Successful!\n";
+            cout << "Welcome, " << loginUsername << "!\n";
+            file.close();
+            return true;
+        }
+    }
+    file.close();
+
+    cout << "\nInvalid Username or Password. Please Try Again.\n";
+    return false;
+}

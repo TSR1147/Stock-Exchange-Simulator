@@ -23,8 +23,11 @@ int main()
             }
 
             case 2:
-                cout << "\nLogin Feature Coming Soon...\n";
+            {
+               user existingUser;
+               existingUser.login();
                 break;
+            }
 
             case 3:
                 cout << "\nThank You For Using Stock Exchange Simulator.\n";

@@ -20,5 +20,7 @@ class user
         void saveToFile();
         // Check whether username already exists.
         bool userExists(string uname);
+        // Login to an existing account.
+        bool login();
 };
 #endif
