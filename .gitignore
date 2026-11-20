@@ -1,0 +1,9 @@
+
+# Account credentials and user data
+users.txt
+
+# Compiled executable files
+*.exe
+
+# Temporary password testing
+test_password.cpp
