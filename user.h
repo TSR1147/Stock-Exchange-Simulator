@@ -22,5 +22,7 @@ class user
         bool userExists(string uname);
         // Login to an existing account.
         bool login();
+        // Update The Logged-In User's Balance In users.txt.
+        bool updateBalance();
 };
 #endif

@@ -5,6 +5,7 @@
 #include <fstream>
 #include <cctype>
 #include <sstream>
+#include <windows.h>
 
 using namespace std;
 
@@ -258,8 +259,11 @@ bool user::login()
     cout << "\nEnter Username: ";
     cin >> loginUsername;
 
-    //convert username to lowercase for consistency
-    loginUsername = toLowerCase(loginUsername);
+    // Convert Username To Lowercase For Consistency.
+loginUsername = toLowerCase(loginUsername);
+
+// Store The Logged-In Username In The Current User Object.
+username = loginUsername;
 
     cout << "Enter Password: ";
 
@@ -357,4 +361,96 @@ bool user::login()
 
     cout << "\nInvalid Username or Password. Please Try Again.\n";
     return false;
+}
+
+
+// Update The Logged-In User's Balance In users.txt.
+bool user::updateBalance()
+{
+    ifstream inputFile("users.txt");
+    ofstream tempFile("users_temp.txt");
+
+    if(!inputFile || !tempFile)
+    {
+        cout << "\nUnable To Update User Balance.\n";
+        return false;
+    }
+
+    string line;
+    bool userFound = false;
+
+    while(getline(inputFile, line))
+    {
+        istringstream lineStream(line);
+        string fileUsername;
+        string secondField;
+
+        if(!(lineStream >> fileUsername >> secondField))
+        {
+            tempFile << line << endl;
+            continue;
+        }
+
+        if(toLowerCase(fileUsername) != toLowerCase(username))
+        {
+            tempFile << line << endl;
+            continue;
+        }
+
+        if(secondField == "PBKDF2")
+        {
+            string saltHex;
+            string hashHex;
+            double oldBalance;
+
+            if(!(lineStream >> saltHex >> hashHex >> oldBalance))
+            {
+                inputFile.close();
+                tempFile.close();
+                remove("users_temp.txt");
+                return false;
+            }
+
+            tempFile << fileUsername << " PBKDF2 " << saltHex << " "
+                     << hashHex << " " << balance << endl;
+        }
+        else
+        {
+            double oldBalance;
+
+            if(!(lineStream >> oldBalance))
+            {
+                inputFile.close();
+                tempFile.close();
+                remove("users_temp.txt");
+                return false;
+            }
+
+            // Keep The Existing Legacy Password Format Unchanged.
+            tempFile << fileUsername << " " << secondField << " "
+                     << balance << endl;
+        }
+
+        userFound = true;
+    }
+
+    inputFile.close();
+    tempFile.close();
+
+    if(!userFound)
+    {
+        remove("users_temp.txt");
+        cout << "\nUser Account Not Found. Balance Was Not Updated.\n";
+        return false;
+    }
+
+    // Replace The Old File Only After The Temporary File Is Written.
+    if(!MoveFileExA("users_temp.txt", "users.txt",
+                    MOVEFILE_REPLACE_EXISTING | MOVEFILE_WRITE_THROUGH))
+    {
+        cout << "\nUnable To Replace User Data File.\n";
+        return false;
+    }
+
+    return true;
 }

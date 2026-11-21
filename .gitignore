@@ -1,9 +1,13 @@
-
-# Account credentials and user data
+# User account data
 users.txt
+
+# User portfolio data
+portfolios.txt
+portfolios_temp.txt
 
 # Compiled executable files
 *.exe
 
-# Temporary password testing
+# Temporary testing files
 test_password.cpp
+test_portfolio.cpp
